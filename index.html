@@ -1,0 +1,33 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>pixiRacer by beanfarmer</title>
+    <style>
+    body{
+      margin: 0;
+      padding: 0;
+      background-color: #000000;
+    }
+    </style>
+
+    <script src="bin/pixi.js"></script>
+</head>
+<body>
+  <script>
+    var stage = new PIXI.Stage(0x66ff99);
+
+    var render = PIXI.autoDetectRenderer(400, 300);
+
+    document.body.appendChild(render.view);
+
+    requestAnimFrame( animate );
+
+    function animate(){
+
+      requestAnimFrame( animate );
+
+      render.render(stage);
+    }
+  </script>
+</body>
+</html>
