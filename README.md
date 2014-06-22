@@ -6,9 +6,6 @@ This project uses Pixi.js which can be found at https://github.com/GoodBoyDigita
 To-Do Art:
 
 >-Background creation.
-
 >-Enemy Sprites.
-
 >-Vans (Weapon pickups).
-
 >-NPC Cars (neutral obstacle). 
