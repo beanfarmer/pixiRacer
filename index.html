@@ -45,7 +45,7 @@
 
     requestAnimFrame(Loop);
 
-    function accelorate(){ // fix me
+    function accelerate(){ // fix me
       if(speedY < MAXSPEED){
           speedY -= 0.2;
       }
@@ -69,7 +69,7 @@
       }
     }
 
-    kd.UP.down(accelorate);
+    kd.UP.down(accelerate);
     kd.DOWN.down(useBreaks);
     kd.LEFT.down(moveLeft);
     kd.RIGHT.down(moveRight);
