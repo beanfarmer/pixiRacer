@@ -20,23 +20,32 @@
     var stage = new PIXI.Stage(0xffffff);
     var render = PIXI.autoDetectRenderer(640, 480);
     document.body.appendChild(render.view);
-    var carTexture = PIXI.Texture.fromImage('img/car.png');
-    var car = new PIXI.Sprite(carTexture);
+    var carTexture = PIXI.Texture.fromImage('img/car.png'); // player sprite is loaded in as a texture
+    var enCarTexture = PIXI.Texture.fromImage('img/car2.png');
+    var car = new PIXI.Sprite(carTexture); // player sprite texture is then loaded to a sprite
+    var enCar = new PIXI.Sprite(enCarTexture);
 
     var speedY = 0.0;
     var speedX = 0.0;
 
-    car.anchor.x = 0.5;
+    enCar.anchor.x = 0.5;
+    enCar.anchor.y = 0.5;
+
+    car.anchor.x = 0.5; // this sets the center of the image to be its 0,0
     car.anchor.y = 0.5;
+
+    enCar.position.x = 150;
+    enCar.position.y = 200;
 
     car.position.x = 70;
     car.position.y = 240;
 
-    stage.addChild(car);
+    stage.addChild(car); // need to add our sprites to the stage
+    stage.addChild(enCar);
 
     requestAnimFrame(Loop);
 
-    function accelorate(){
+    function accelorate(){ // fix me
       if(speedY < MAXSPEED){
           speedY -= 0.2;
       }
@@ -83,18 +92,18 @@
       }
     }
 
-    function boundsCheck(){
+    function boundsCheck(){ // someone add me please
 
     }
 
     function Loop(){
-      kd.tick();
-      requestAnimFrame(Loop);
-      slowDown();
+      kd.tick(); // keyboard listener if you like
+      requestAnimFrame(Loop); //update the screen
+      slowDown(); //
       car.position.y += speedY;
       car.position.x += speedX;
       boundsCheck();
-      render.render(stage);
+      render.render(stage); //draw the backbuffer to the screen
     }
 
   </script>
