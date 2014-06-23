@@ -44,6 +44,12 @@
     stage.addChild(enCar);
 
     requestAnimFrame(Loop);
+    
+    function drawDebug(){ //console output if debug
+		console.clear();
+		console.log("speedX = " + speedX);
+		console.log("speedX = " + speedY);
+	}
 
     function accelerate(){ // fix me
       if(speedY < MAXSPEED){
@@ -90,21 +96,42 @@
       else if(speedX < 0.0){
         speedX += 0.05;
       }
+	  
+	  //make sure its stopped dead.
+	  if(speedX < 0.0 && speedX > 0.0){
+	    speedX = 0;
+	  }
+	  if(speedY < 0.0 && speedY > 0.0){
+	    speedY = 0;
+	  }
     }
 
-    function boundsCheck(){ // someone add me please
-
+    function boundsCheck(object){ // someone add me please
+		if(object.position.x < 0){
+			object.position.x = rendWidth;
+		}else if(object.position.x > rendWidth){
+			object.position.x = 0;
+		}
+		if(object.position.y < 0){
+			object.position.y = rendHeight;
+		}else if(object.position.y > rendHeight){
+			object.position.y = 0;
+		}
     }
 
     function Loop(){
       kd.tick(); // keyboard listener if you like
+      slowDown(); // slows and subsequently stops car
+      car.position.y += speedY; //update the car's y position
+      car.position.x += speedX;//update the car's x position
+      boundsCheck(car); //car bounds check
+	  
+	  if(debug==true){
+		drawDebug();  
+	  }
+	  
       requestAnimFrame(Loop); //update the screen
-      slowDown(); //
-      car.position.y += speedY;
-      car.position.x += speedX;
-      boundsCheck();
       render.render(stage); //draw the backbuffer to the screen
-    }
 
   </script>
 </body>
