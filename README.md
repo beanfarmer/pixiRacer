@@ -3,7 +3,7 @@
 
 This project uses Pixi.js which can be found at https://github.com/GoodBoyDigital/pixi.js
 special thanks to Gary Ferguson (https://github.com/HighstoneCoding) and Lib (need a link for you man)
-for there artwork.
+for their artwork.
 
 To-Do Art:
 >- Background creation.
@@ -12,7 +12,7 @@ To-Do Art:
 >- NPC Cars (neutral obstacle).
 
 To-Do Code:
->- fix controls, these are mad broken to slow for this kind of game.
+>- fix controls, these are mad broken and too slow for this kind of game.
 >- add a sprite spawn function.
 >- add enemy paths.
 >- add collision detection.
