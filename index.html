@@ -16,7 +16,7 @@
   <script>
     var MAXSPEED = 2.0;
     var MINSPEED = -2.0;
-    
+
     var rendWidth = 640;
     var rendHeight = 480;
 
@@ -30,9 +30,9 @@
 
     var speedY = 0.0;
     var speedX = 0.0;
-	
+
     var debug = true;
-	
+
     enCar.anchor.x = 0.5;
     enCar.anchor.y = 0.5;
 
@@ -49,7 +49,7 @@
     stage.addChild(enCar);
 
     requestAnimFrame(Loop);
-    
+
     function drawDebug(){ //console output if debug
 		console.clear();
 		console.log("speedX = " + speedX);
@@ -101,7 +101,7 @@
       else if(speedX < 0.0){
         speedX += 0.05;
       }
-	  
+
 	  //make sure its stopped dead.
 	  if(speedX < 0.0 && speedX > 0.0){
 	    speedX = 0;
@@ -130,14 +130,14 @@
       car.position.y += speedY; //update the car's y position
       car.position.x += speedX;//update the car's x position
       boundsCheck(car); //car bounds check
-	  
+
 	  if(debug==true){
-		drawDebug();  
+		drawDebug();
 	  }
-	  
+
       requestAnimFrame(Loop); //update the screen
       render.render(stage); //draw the backbuffer to the screen
-
+}
   </script>
 </body>
 </html>
