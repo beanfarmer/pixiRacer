@@ -16,9 +16,12 @@
   <script>
     var MAXSPEED = 2.0;
     var MINSPEED = -2.0;
+    
+    var rendWidth = 640;
+    var rendHeight = 480;
 
     var stage = new PIXI.Stage(0xffffff);
-    var render = PIXI.autoDetectRenderer(640, 480);
+    var render = PIXI.autoDetectRenderer(rendWidth, rendHeight);
     document.body.appendChild(render.view);
     var carTexture = PIXI.Texture.fromImage('img/car.png'); // player sprite is loaded in as a texture
     var enCarTexture = PIXI.Texture.fromImage('img/car2.png');
@@ -27,7 +30,9 @@
 
     var speedY = 0.0;
     var speedX = 0.0;
-
+	
+    var debug = true;
+	
     enCar.anchor.x = 0.5;
     enCar.anchor.y = 0.5;
 
