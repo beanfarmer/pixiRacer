@@ -3,61 +3,61 @@
 	<head>
 		<title>pixiRacer by beanfarmer</title>
 		<style>
-            body{
-                margin: 0;
-                padding: 0;
-                background-color: #000000;
-            }
-        </style>
-        <script src="http://jeremyckahn.github.io/keydrown/dist/keydrown.js"></script>
-        <script src="bin/pixi.dev.js"></script>
-    </head>
-    <body>
+			body{
+				margin: 0;
+				padding: 0;
+				background-color: #000000;
+			}
+		</style>
+		<script src="http://jeremyckahn.github.io/keydrown/dist/keydrown.js"></script>
+		<script src="bin/pixi.dev.js"></script>
+	</head>
+	<body>
 		<script>
-        	var MAXSPEED = 2.0;
-        	var MINSPEED = -2.0;
-    
-        	var rendWidth = 640;
-        	var rendHeight = 480;
-    
-        	var stage = new PIXI.Stage(0xffffff);
-        	var render = PIXI.autoDetectRenderer(rendWidth, rendHeight);
-        	document.body.appendChild(render.view);
-        	var carTexture = PIXI.Texture.fromImage('img/car.png'); // player sprite is loaded in as a texture
-        	var enCarTexture = PIXI.Texture.fromImage('img/car2.png'); // enCar == enemy
-        	var car = new PIXI.Sprite(carTexture); // player sprite texture is then loaded to a sprite
-       		var enCar = new PIXI.Sprite(enCarTexture);
-    
-        	var speedY = 0.0;
-        	var speedX = 0.0;
-    
-        	var debug = true;
-        	var userinput = false;
-        
-        	enCar.anchor.x = 0.5;
-        	enCar.anchor.y = 0.5;
-    
-        	car.anchor.x = 0.5; // this sets the center of the image to be its 0,0
-        	car.anchor.y = 0.5;
-    
-        	enCar.position.x = 150;
-        	enCar.position.y = 200;
-    
-        	car.position.x = 70;
-        	car.position.y = 240;
-    
-        	stage.addChild(car); // need to add our sprites to the stage
-        	stage.addChild(enCar);
-    
-        	requestAnimFrame(Loop);
-    
-        	function drawDebug(){ //console output if debug
-        	    console.clear();
-        	    console.log("speedX = " + speedX);
-        	    console.log("speedY = " + speedY);
-        	}
-    
-        	function accelerate(){ // controls now work
+			var MAXSPEED = 2.0;
+			var MINSPEED = -2.0;
+			
+			var rendWidth = 640;
+			var rendHeight = 480;
+			
+			var stage = new PIXI.Stage(0xffffff);
+			var render = PIXI.autoDetectRenderer(rendWidth, rendHeight);
+			document.body.appendChild(render.view);
+			var carTexture = PIXI.Texture.fromImage('img/car.png'); // player sprite is loaded in as a texture
+			var enCarTexture = PIXI.Texture.fromImage('img/car2.png'); // enCar == enemy
+			var car = new PIXI.Sprite(carTexture); // player sprite texture is then loaded to a sprite
+			var enCar = new PIXI.Sprite(enCarTexture);
+			
+			var speedY = 0.0;
+			var speedX = 0.0;
+			
+			var debug = true;
+			var userinput = false;
+			
+			enCar.anchor.x = 0.5;
+			enCar.anchor.y = 0.5;
+			
+			car.anchor.x = 0.5; // this sets the center of the image to be its 0,0
+			car.anchor.y = 0.5;
+			
+			enCar.position.x = 150;
+			enCar.position.y = 200;
+			
+			car.position.x = 70;
+			car.position.y = 240;
+			
+			stage.addChild(car); // need to add our sprites to the stage
+			stage.addChild(enCar);
+			
+			requestAnimFrame(Loop);
+			
+			function drawDebug(){ //console output if debug
+				console.clear();
+				console.log("speedX = " + speedX);
+				console.log("speedY = " + speedY);
+			}
+			
+			function accelerate(){ // controls now work
 				if(speedY > MINSPEED){
 					speedY -= 0.2;
 				}
@@ -80,30 +80,30 @@
 					speedX+= 0.2;
 				}
 			}
-    
+			
 			function Controls(){
 				kd.UP.down(accelerate);
 				kd.DOWN.down(useBreaks);
 				kd.LEFT.down(moveLeft);
 				kd.RIGHT.down(moveRight);
-			
+				
 				if(kd.UP.isDown() == false){ //yay
 					slowDown();
 				}
-			
+				
 				if(kd.DOWN.isDown() == false){ //yay
 					slowDown();
 				}
-			
+				
 				if(kd.LEFT.isDown() == false){ //yay
 					slowDown();
 				}
-			
+				
 				if(kd.RIGHT.isDown() == false){ //yay
 					slowDown();
 				}
 			}
-    
+			
 			function slowDown(){
 				if(speedY > 0.0){
 					speedY -= 0.05;
@@ -119,17 +119,16 @@
 				}
 				stopDead();
 			}
-        
-			function stopDead(){
-			  	//make sure its stopped dead.
-			  	if(speedX < 0.01 && speedX > 0.01){
+			
+			function stopDead(){//make sure its stopped dead.
+				if(speedX < 0.01 && speedX > 0.01){
 					speedX = 0.0;
-			  	}
-			  	if(speedY < 0.01 && speedY > 0.01){
+				}
+				if(speedY < 0.01 && speedY > 0.01){
 					speedY = 0.0;
-			  	}
+				}
 			}
-    
+			
 			function boundsCheck(object){ // someone add me please
 				if(object.position.x < 0){
 					object.position.x = rendWidth;
@@ -142,27 +141,27 @@
 					object.position.y = 0;
 				}
 			}
-    
+			
 			function collision(object1, object2){ // someone add me please
 			//	if(object1.position.x == object2.position.x){
 			//	}
 			}
-    
-        	function Loop(){
-          		kd.tick(); // keyboard listener's update if you like
-      			Controls();
-          		car.position.y += speedY; //update the car's y position
-          		car.position.x += speedX;//update the car's x position
-          		boundsCheck(car); //car bounds check
-          		collision(car, enCar);
-    
-			  	if(debug==true){
+			
+			function Loop(){
+				kd.tick(); // keyboard listener's update if you like
+				Controls();
+				car.position.y += speedY; //update the car's y position
+				car.position.x += speedX;//update the car's x position
+				boundsCheck(car); //car bounds check
+				collision(car, enCar);
+				
+				if(debug==true){
 					drawDebug();
-			  	}
-    
+				}
+				
 				requestAnimFrame(Loop); //update the screen
 				render.render(stage); //draw the backbuffer to the screen
-    		}
-      	</script>
-    </body>
+			}
+		</script>
+	</body>
 </html>
