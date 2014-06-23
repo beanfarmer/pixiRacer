@@ -21,7 +21,7 @@
     var render = PIXI.autoDetectRenderer(640, 480);
     document.body.appendChild(render.view);
     var carTexture = PIXI.Texture.fromImage('img/car.png'); // player sprite is loaded in as a texture
-    var enCarTexture = PIXI.Texture.fromImage('img/car2.png');
+    var enCarTexture = PIXI.Texture.fromImage('img/car2.png'); // enCar == enemy
     var car = new PIXI.Sprite(carTexture); // player sprite texture is then loaded to a sprite
     var enCar = new PIXI.Sprite(enCarTexture);
 
