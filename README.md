@@ -16,3 +16,7 @@ To-Do Code:
 >- add a sprite spawn function.
 >- add enemy paths.
 >- add collision detection.
+
+Announcements:
+
+>- fixed movement slightly.
