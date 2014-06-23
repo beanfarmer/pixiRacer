@@ -45,26 +45,26 @@
 
     requestAnimFrame(Loop);
 
-    function accelerate(){ // fix me
-      if(speedY < MAXSPEED){
+    function accelerate(){ // now less broken.
+      if(speedY > MINSPEED){
           speedY -= 0.2;
       }
     }
 
     function useBreaks(){
-      if(speedY > MINSPEED){
+      if(speedY < MAXSPEED){
         speedY += 0.2;
       }
     }
 
     function moveLeft(){
-      if(speedX < MAXSPEED){
+      if(speedX > MINSPEED){
         speedX -= 0.2;
       }
     }
 
     function moveRight(){
-      if(speedX > MINSPEED){
+      if(speedX < MAXSPEED){
         speedX+= 0.2;
       }
     }
