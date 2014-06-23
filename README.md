@@ -19,4 +19,4 @@ To-Do Code:
 
 Announcements:
 
->- fixed movement slightly.
+>- fixed movement car now stops feels better (beanfarmer)
