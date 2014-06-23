@@ -90,13 +90,16 @@
     if(kd.UP.isDown() == false){ //yay
         slowDown();
     }
-    else if(kd.DOWN.isDown() == false){ //yay
+
+    if(kd.DOWN.isDown() == false){ //yay
         slowDown();
     }
-    else if(kd.LEFT.isDown() == false){ //yay
+
+    if(kd.LEFT.isDown() == false){ //yay
         slowDown();
     }
-    else if(kd.RIGHT.isDown() == false){ //yay
+
+    if(kd.RIGHT.isDown() == false){ //yay
         slowDown();
     }
 
@@ -108,7 +111,7 @@
         speedY -= 0.05;
       }
 
-      else if(speedY < 0.0){
+      if(speedY < 0.0){
         speedY += 0.05;
       }
 
@@ -116,7 +119,7 @@
         speedX -= 0.05;
       }
 
-      else if(speedX < 0.0){
+      if(speedX < 0.0){
         speedX += 0.05;
       }
 
