@@ -14,19 +14,24 @@
 </head>
 <body>
 		<script>
-			var MAXSPEED = 2.0;
-			var MINSPEED = -2.0;
+			var MAXSPEED = 5.0;
+			var MINSPEED = -5.0;
 
 			var rendWidth = 640;
 			var rendHeight = 480;
 
 			var stage = new PIXI.Stage(0xffffff);
 			var render = PIXI.autoDetectRenderer(rendWidth, rendHeight);
-			document.body.appendChild(render.view);
-			var carTexture = PIXI.Texture.fromImage('img/car.png'); // player sprite is loaded in as a texture
+
+      document.body.appendChild(render.view);
+
+      var carTexture = PIXI.Texture.fromImage('img/car.png'); // player sprite is loaded in as a texture
 			var enCarTexture = PIXI.Texture.fromImage('img/car2.png'); // enCar == enemy
-			var car = new PIXI.Sprite(carTexture); // player sprite texture is then loaded to a sprite
+			var shot00Texture = PIXI.Texture.fromImage('img/shot00.png'); //basic shot
+
+      var car = new PIXI.Sprite(carTexture); // player sprite texture is then loaded to a sprite
 			var enCar = new PIXI.Sprite(enCarTexture);
+      var shot00 = new PIXI.Sprite(shot00Texture);
 
 			var speedY = 0.0;
 			var speedX = 0.0;
@@ -47,7 +52,7 @@
 			car.position.y = 240;
 
 			stage.addChild(car); // need to add our sprites to the stage
-			stage.addChild(enCar);
+			stage.addChild(enCar); //fun fact you can also stage.removeChild(object)
 
 			requestAnimFrame(Loop);
 
@@ -81,11 +86,26 @@
 				}
 			}
 
+      function shoot(){ //started work here anyone want to jump in.
+        switch(weapon)
+        {
+          case 0:
+            //shot00
+            stage.addChild(shot00);
+            break;
+
+          case 1:
+            //next weapon (shot01?)
+            break;
+        }
+      }
+
 			function Controls(){
 				kd.UP.down(accelerate);
 				kd.DOWN.down(useBreaks);
 				kd.LEFT.down(moveLeft);
 				kd.RIGHT.down(moveRight);
+        kd.SPACE.down(shoot);
 
 				if(kd.UP.isDown() == false){ //yay
 					slowDown();
@@ -154,6 +174,7 @@
 				car.position.x += speedX;//update the car's x position
 				boundsCheck(car); //car bounds check
 				collision(car, enCar);
+        debug=false;
 
 				if(debug==true){
 					drawDebug();
