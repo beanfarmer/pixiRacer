@@ -21,3 +21,5 @@ Announcements:
 
 >- Fixed movement car now stops feels better (beanfarmer)
 >- A live version is up at http://pixiracer.beanfarmer.co.uk:8080/ it is inline with the master(beanfarmer)
+>- changed screen size!
+>- enCar now scrolls

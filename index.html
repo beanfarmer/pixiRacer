@@ -17,7 +17,7 @@
 			var MAXSPEED = 5.0;
 			var MINSPEED = -5.0;
 
-			var rendWidth = 640;
+			var rendWidth = 320;
 			var rendHeight = 480;
 
 			var stage = new PIXI.Stage(0xffffff);
@@ -53,7 +53,7 @@
       bg.position.x = 0;
       bg.position.y = -260;
 
-			enCar.position.x = 150;
+			enCar.position.x = 135;
 			enCar.position.y = 200;
 
 			car.position.x = 70;
@@ -167,6 +167,10 @@
         //console.log('bgY:' + bg.position.y);
       }
 
+      function driveEn(){
+        enCar.position.y += 3;
+      }
+
 			function boundsCheck(object){ // someone add me please
 				if(object.position.x < 0){
 					object.position.x = rendWidth;
@@ -188,6 +192,8 @@
 			function Loop(){
 				kd.tick(); // keyboard listener's update if you like
 				scrollBg();
+        driveEn();
+        boundsCheck(enCar);
         Controls();
 				car.position.y += speedY; //update the car's y position
 				car.position.x += speedX;//update the car's x position
