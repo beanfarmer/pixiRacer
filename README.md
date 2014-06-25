@@ -12,11 +12,12 @@ To-Do Art (sizes for images needed in pixels):
 >- NPC Cars (neutral obstacle). (22x30)
 
 To-Do Code:
->- fix controls, these are mad broken and too slow for this kind of game.
+>- fix controls, these are mad broken and too slow for this kind of game.(done beanfarmer)
 >- add a sprite spawn function.
 >- add enemy paths.
->- add collision detection.
+>- add collision detection.(started Cr0ss0vr)
 
 Announcements:
 
->- fixed movement car now stops feels better (beanfarmer)
+>- Fixed movement car now stops feels better (beanfarmer)
+>- A live version is up at http://pixiracer.beanfarmer.co.uk:8080/ it is inline with the master(beanfarmer)
