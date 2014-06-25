@@ -23,3 +23,4 @@ Announcements:
 >- A live version is up at http://pixiracer.beanfarmer.co.uk:8080/ it is inline with the master(beanfarmer)
 >- changed screen size!
 >- enCar now scrolls
+>- lastest build shows off multipal moving objects starting to almost look like a game.

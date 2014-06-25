@@ -29,10 +29,12 @@
       var carTexture = PIXI.Texture.fromImage('img/car.png'); // player sprite is loaded in as a texture
 			var enCarTexture = PIXI.Texture.fromImage('img/car2.png'); // enCar == enemy
 			var shot00Texture = PIXI.Texture.fromImage('img/shot00.png'); //basic shot
+      var truckDTurboTexture = PIXI.Texture.fromImage('img/truckDturbo.png');
 
       var bg = new PIXI.Sprite(bgTexture);
       var car = new PIXI.Sprite(carTexture); // player sprite texture is then loaded to a sprite
 			var enCar = new PIXI.Sprite(enCarTexture);
+      var truckDTurbo = new PIXI.Sprite(truckDTurboTexture);
       var shot00 = new PIXI.Sprite(shot00Texture);
 
 			var speedY = 0.0;
@@ -50,6 +52,10 @@
 			car.anchor.x = 0.5; // this sets the center of the image to be its 0,0
 			car.anchor.y = 0.5;
 
+      truckDTurbo.anchor.x = 0.5;
+      truckDTurbo.anchor.y = 0.5;
+
+
       bg.position.x = 0;
       bg.position.y = -260;
 
@@ -59,9 +65,13 @@
 			car.position.x = 70;
 			car.position.y = 240;
 
+      truckDTurbo.position.x = 70;
+      truckDTurbo.position.y = 460;
+
 			stage.addChild(bg);
       stage.addChild(car); // need to add our sprites to the stage
 			stage.addChild(enCar); //fun fact you can also stage.removeChild(object)
+      stage.addChild(truckDTurbo);
 
 			requestAnimFrame(Loop);
 
@@ -167,8 +177,12 @@
         //console.log('bgY:' + bg.position.y);
       }
 
-      function driveEn(){
-        enCar.position.y += 3;
+      function scrollDown(object){
+        object.position.y += 3;
+      }
+
+      function scrollUp(object){
+        object.position.y -= 3;
       }
 
 			function boundsCheck(object){ // someone add me please
@@ -192,8 +206,13 @@
 			function Loop(){
 				kd.tick(); // keyboard listener's update if you like
 				scrollBg();
-        driveEn();
+
+        scrollDown(enCar);
         boundsCheck(enCar);
+
+        scrollUp(truckDTurbo);
+        boundsCheck(truckDTurbo);
+
         Controls();
 				car.position.y += speedY; //update the car's y position
 				car.position.x += speedX;//update the car's x position
