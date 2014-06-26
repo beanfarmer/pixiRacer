@@ -43,6 +43,11 @@
 			var debug = true;
 			var userinput = false;
 
+      var weapon = 0;
+
+      var fireing = false;
+      var childLoaded = false; //fixes a bug
+
       bg.anchor.x = 0.0;
       bg.anchor.y = 0.0;
 
@@ -106,16 +111,27 @@
 			}
 
       function shoot(){ //started work here anyone want to jump in.
-        switch(weapon)
-        {
-          case 0:
-            //shot00
-            stage.addChild(shot00);
-            break;
+            fireing = true;
+      }
 
-          case 1:
-            //next weapon (shot01?)
-            break;
+      function Fire(object){
+        if(childLoaded == false){
+          object.anchor.x = 0.5;
+          object.anchor.y = 1.0;
+
+          object.position.x = car.position.x;
+          object.position.y = car.position.y - 10;
+
+          stage.addChild(object);
+          childLoaded = true;
+        }
+
+        if(object.position.y > 0){
+          scrollY(object, -4);
+        }else{
+          stage.removeChild(object);
+          childLoaded = false;
+          fireing = false;
         }
       }
 
@@ -177,12 +193,9 @@
         //console.log('bgY:' + bg.position.y);
       }
 
-      function scrollDown(object){
-        object.position.y += 3;
-      }
 
-      function scrollUp(object){
-        object.position.y -= 3;
+      function scrollY(object, ySpeed){
+        object.position.y += ySpeed;
       }
 
 			function boundsCheck(object){ // someone add me please
@@ -207,11 +220,16 @@
 				kd.tick(); // keyboard listener's update if you like
 				scrollBg();
 
-        scrollDown(enCar);
+        scrollY(enCar, 3);
         boundsCheck(enCar);
 
-        scrollUp(truckDTurbo);
+        scrollY(truckDTurbo, -3);
         boundsCheck(truckDTurbo);
+
+        if(fireing == true){
+          Fire(shot00);
+        }
+
 
         Controls();
 				car.position.y += speedY; //update the car's y position
