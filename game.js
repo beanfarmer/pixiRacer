@@ -1,6 +1,9 @@
 var MAXSPEED = 5.0;
 var MINSPEED = -5.0;
 
+var PLAYERSTARTX = 70;
+var PLAYERSTARTY = 240;
+
 var rendWidth = 320;
 var rendHeight = 480;
 
@@ -53,8 +56,8 @@ bg.position.y = -260;
 enCar.position.x = 135;
 enCar.position.y = 200;
 
-car.position.x = 70;
-car.position.y = 240;
+car.position.x = PLAYERSTARTX;
+car.position.y = PLAYERSTARTY;
 
 truckDTurbo.position.x = 70;
 truckDTurbo.position.y = 460;
@@ -97,7 +100,7 @@ function moveRight(){
 }
 
 function shoot(){ //started work here anyone want to jump in.
-      fireing = true;
+        fireing = true;
 }
 
 function Fire(object){
@@ -198,8 +201,14 @@ function boundsCheck(object){ // someone add me please
 }
 
 function collision(object1, object2){ // someone add me please
-//	if(object1.position.x == object2.position.x){
-//	}
+    var distX = object1.position.x - object2.position.x;
+    if(distX > (-object1.width * 0.5) && distX > (object1.width * 0.5)){
+        var distY = object1.position.y - object2.position.y;
+    if(distY >(-object1.height * 0.5) && distY < (object1.width * 0.5)){
+        object1.position.x = PLAYERSTARTX;
+        object1.position.y = PLAYERSTARTY;
+    }
+  }
 }
 
 function Loop(){
@@ -216,12 +225,11 @@ function Loop(){
     Fire(shot00);
   }
 
-
   Controls();
   car.position.y += speedY; //update the car's y position
   car.position.x += speedX;//update the car's x position
   boundsCheck(car); //car bounds check
-  collision(car, enCar);
+  collision(enCar, car);
   debug=false;
 
   if(debug==true){
