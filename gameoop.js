@@ -61,6 +61,19 @@ var Game = {
     return sprite;
   },
 
+  boundsCheck: function(object){
+    if(object.position.x < 0){
+      object.position.x = SCREENWIDTH;
+    }else if(object.position.x > SCREENWIDTH){
+      object.position.x = 0;
+    }
+    if(object.position.y < 0){
+      object.position.y = SCREENHEIGHT;
+    }else if(object.position.y > SCREENHEIGHT){
+      object.position.y = 0;
+    }
+  },
+
   accelerate: function(){
     if(this.playerSpeedY > MINSPEED){
       this.playerSpeedY -= 0.2;
@@ -86,18 +99,52 @@ var Game = {
   },
 
   slowDown: function(){
-    if(this.playerSpeedY > 0.0){
-      this.playerSpeedY -= 0.05;
+    var xChanged = false;
+    var yChanged = false;
+
+    var speedX = this.player.playerSpeedX;
+    var speedY = this.player.playerSpeedY;
+
+    if(speedX < 0 && xChanged == false){
+      speedX = speedX * -1;
+      xChanged = true;
     }
-    if(this.playerSpeedY < 0.0){
-      this.playerSpeedY += 0.05;
+
+    if(speedY < 0 && xChanged == false){
+      speedY = speedY * -1;
+      yChanged = true;
     }
-    if(this.playerSpeedX > 0.0){
-      this.playerSpeedX -= 0.05;
+
+    if(speedX > 0 && xChanged == false){
+      this.player.playerSpeedX -= 0.05;
+      speedY -= 0.05;
     }
-    if(this.playerSpeedX < 0.0){
-      this.playerSpeedX += 0.05;
+
+    if(speedY > 0 && yChanged == false){
+      this.player.playerSpeedY -= 0.05;
+      speedY -= 0.05;
     }
+
+    if(speedX > 0 && xChanged == true){
+      this.player.playerSpeedX += 0.05;
+      speedX -= 0.05;
+    }
+
+    if(speedY > 0 && yChanged == true){
+      this.player.playerSpeedY += 0.05;
+      speedY -= 0.05;
+    }
+
+    if(speedX == 0.0){
+      xChanged = false;
+      this.player.playerSpeedX = 0.0;
+    }
+
+    if(speedY == 0.0){
+      yChanged = false;
+      this.player.playerSpeedY = 0.0;
+    }
+
   },
 
   scrollBackground: function(){
@@ -117,10 +164,10 @@ var Game = {
 
 
 function Loop(){
-  kd.tick();
-
   Game.scrollBackground();
   Game.updatePlayer();
+
+  Game.boundsCheck(Game.player);
 
   requestAnimFrame(Loop); //update the screen
   Game.render.render(Game.stage); //draw the backbuffer to the screen
@@ -128,50 +175,50 @@ function Loop(){
 
 function initKeys(){
   document.body.addEventListener('keydown', function (evt) {
-    if (evt.keyCode === 38) {
+    if (evt.keyCode === 38 || evt.keyCode == 87) {
       Game.accelerate();
     }
   });
 
   document.body.addEventListener('keyup', function (evt) {
-    if (evt.keyCode === 38 ) {
+    if (evt.keyCode === 38 || evt.keyCode == 87) {
       Game.slowDown();
     }
   });
 
 
   document.body.addEventListener('keydown', function (evt) {
-    if (evt.keyCode === 40) {
+    if (evt.keyCode === 40 || evt.keyCode == 83) {
       Game.useBreaks();
     }
   });
 
   document.body.addEventListener('keyup', function (evt) {
-    if (evt.keyCode === 40 ) {
+    if (evt.keyCode === 40 || evt.keyCode == 83) {
       Game.slowDown();
     }
   });
 
   document.body.addEventListener('keydown', function (evt) {
-    if (evt.keyCode === 37) {
+    if (evt.keyCode === 37 || evt.keyCode == 65) {
       Game.moveLeft();
     }
   });
 
   document.body.addEventListener('keyup', function (evt) {
-    if (evt.keyCode === 37 ) {
+    if (evt.keyCode === 37 || evt.keyCode == 65) {
       Game.slowDown();
     }
   });
 
   document.body.addEventListener('keydown', function (evt) {
-    if (evt.keyCode === 39) {
+    if (evt.keyCode === 39 || evt.keyCode == 68) {
       Game.moveRight();
     }
   });
 
   document.body.addEventListener('keyup', function (evt) {
-    if (evt.keyCode === 39 ) {
+    if (evt.keyCode === 39 || evt.keyCode == 68) {
       Game.slowDown();
     }
   });
