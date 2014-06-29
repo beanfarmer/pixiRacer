@@ -14,6 +14,8 @@ var Game = {
   stage: null,
   render: null,
   player: null,
+  playerSpeedX: null,
+  playerSpeedY: null,
   background: null,
   score: null,
   texture: [],
@@ -56,11 +58,94 @@ var Game = {
     sprite.position.y = startY;
 
     return sprite;
+  },
+
+  checkKeys: function(){
+    kd.UP.down(Game.accelerate);
+    kd.DOWN.down(Game.useBreaks);
+    kd.LEFT.down(Game.moveLeft);
+    kd.RIGHT.down(Game.moveRight);
+    kd.SPACE.down(Game.shoot);
+
+    if(kd.UP.isDown() == false){ //yay
+      Game.slowDown();
+    }
+
+    if(kd.DOWN.isDown() == false){ //yay
+      Game.slowDown();
+    }
+
+    if(kd.LEFT.isDown() == false){ //yay
+      Game.slowDown();
+    }
+
+    if(kd.RIGHT.isDown() == false){ //yay
+      Game.slowDown();
+    }
+  },
+
+  accelerate: function(){
+    if(this.playerSpeedY > MINSPEED){
+      this.playerSpeedY -= 0.2;
+    }
+  },
+
+  useBreaks: function(){
+    if(this.playerSpeedY < MAXSPEED){
+      this.playerSpeedY += 0.2;
+    }
+  },
+
+  moveLeft: function(){
+    if(this.playerSpeedX > MINSPEED){
+      this.playerSpeedX -= 0.2;
+    }
+  },
+
+  moveRight: function(){
+    if(this.playerSpeedX < MAXSPEED){
+      this.playerSpeedX += 0.2;
+    }
+  },
+
+  slowDown: function(){
+    if(this.playerSpeedY > 0.0){
+      this.playerSpeedY -= 0.05;
+    }
+    if(this.playerSpeedY < 0.0){
+      this.playerSpeedY += 0.05;
+    }
+    if(this.playerSpeedX > 0.0){
+      this.playerSpeedX -= 0.05;
+    }
+    if(this.playerSpeedX < 0.0){
+      this.playerSpeedX += 0.05;
+    }
+  },
+
+  scrollBackground: function(){
+    if(this.background.position.y < 0){
+        this.background.position.y += 4;
+    }else{
+      this.background.position.y = -260;
+    }
+  },
+
+  updatePlayer: function(){
+    this.player.position.x += this.playerSpeedX;
+    this.player.position.y += this.playerSpeedY;
   }
 
 };
 
+
 function Loop(){
+  kd.tick();
+
+  Game.scrollBackground();
+  Game.checkKeys();
+  Game.updatePlayer();
+
   requestAnimFrame(Loop); //update the screen
   Game.render.render(Game.stage); //draw the backbuffer to the screen
 }
