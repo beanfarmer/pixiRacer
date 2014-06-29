@@ -26,3 +26,4 @@ Announcements:
 >- lastest build shows off multipal moving objects starting to almost look like a game.
 >- added firing, we can now shoot! this is a really bad way to handle this and it is going to be rewritten along with sprite loading
 >- updated collision detection still needs more work as its not quite accurate but can be tested by driving into enCar.
+>- bleeding edge version now at the oop branch
