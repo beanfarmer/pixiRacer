@@ -27,6 +27,7 @@ var Game = {
     this.stage = new PIXI.Stage();
     this.render = PIXI.autoDetectRenderer(SCREENWIDTH, SCREENHEIGHT);
     document.body.appendChild(this.render.view);
+    initKeys();
     score = 0;
     this.loadTextures();
 
@@ -58,30 +59,6 @@ var Game = {
     sprite.position.y = startY;
 
     return sprite;
-  },
-
-  checkKeys: function(){
-    kd.UP.down(Game.accelerate);
-    kd.DOWN.down(Game.useBreaks);
-    kd.LEFT.down(Game.moveLeft);
-    kd.RIGHT.down(Game.moveRight);
-    kd.SPACE.down(Game.shoot);
-
-    if(kd.UP.isDown() == false){ //yay
-      Game.slowDown();
-    }
-
-    if(kd.DOWN.isDown() == false){ //yay
-      Game.slowDown();
-    }
-
-    if(kd.LEFT.isDown() == false){ //yay
-      Game.slowDown();
-    }
-
-    if(kd.RIGHT.isDown() == false){ //yay
-      Game.slowDown();
-    }
   },
 
   accelerate: function(){
@@ -143,9 +120,59 @@ function Loop(){
   kd.tick();
 
   Game.scrollBackground();
-  Game.checkKeys();
   Game.updatePlayer();
 
   requestAnimFrame(Loop); //update the screen
   Game.render.render(Game.stage); //draw the backbuffer to the screen
+}
+
+function initKeys(){
+  document.body.addEventListener('keydown', function (evt) {
+    if (evt.keyCode === 38) {
+      Game.accelerate();
+    }
+  });
+
+  document.body.addEventListener('keyup', function (evt) {
+    if (evt.keyCode === 38 ) {
+      Game.slowDown();
+    }
+  });
+
+
+  document.body.addEventListener('keydown', function (evt) {
+    if (evt.keyCode === 40) {
+      Game.useBreaks();
+    }
+  });
+
+  document.body.addEventListener('keyup', function (evt) {
+    if (evt.keyCode === 40 ) {
+      Game.slowDown();
+    }
+  });
+
+  document.body.addEventListener('keydown', function (evt) {
+    if (evt.keyCode === 37) {
+      Game.moveLeft();
+    }
+  });
+
+  document.body.addEventListener('keyup', function (evt) {
+    if (evt.keyCode === 37 ) {
+      Game.slowDown();
+    }
+  });
+
+  document.body.addEventListener('keydown', function (evt) {
+    if (evt.keyCode === 39) {
+      Game.moveRight();
+    }
+  });
+
+  document.body.addEventListener('keyup', function (evt) {
+    if (evt.keyCode === 39 ) {
+      Game.slowDown();
+    }
+  });
 }
