@@ -16,19 +16,27 @@ var Game = {
   player: null,
   playerSpeedX: null,
   playerSpeedY: null,
+  xflip: null,
+  yflip: null,
   background: null,
   score: null,
+  isMoving: null,
+  shot: null,
   texture: [],
   enemies: [],
   trucks: [],
+  keys: [],
   shots: [],
 
   init: function(){
+    this.initKeys();
     this.stage = new PIXI.Stage();
     this.render = PIXI.autoDetectRenderer(SCREENWIDTH, SCREENHEIGHT);
     document.body.appendChild(this.render.view);
-    initKeys();
-    score = 0;
+    this.score = 0;
+    this.isMoving = false;
+    this.xflip = false;
+    this.yflip = false;
     this.loadTextures();
 
     this.background = this.setupSprite(this.texture[0], 0.0, 0.0, 0, -260); //setup the background;
@@ -38,6 +46,16 @@ var Game = {
     this.stage.addChild(this.player);
 
     requestAnimFrame(Loop);
+  },
+
+  initKeys: function(){
+    for(var i = 0; i < 6; i++){
+      this.keys[i] = false;
+      console.log("key: " + this.keys[i]);
+    }
+    this.shot = false;
+    document.body.addEventListener('keydown',Game.keyDownHandler, false);
+    document.body.addEventListener('keyup',  Game.keyUpHandler, false);
   },
 
   loadTextures: function(){
@@ -99,52 +117,45 @@ var Game = {
   },
 
   slowDown: function(){
-    var xChanged = false;
-    var yChanged = false;
+    var speedx = this.playerSpeedX;
+    var speedy = this.playerSpeedY;
 
-    var speedX = this.player.playerSpeedX;
-    var speedY = this.player.playerSpeedY;
+    if(this.isMoving === false){
+        if(speedy < 0){
+          speedy = speedy * -1;
+          this.yflip = true;
+        }
+        if(speedx < 0){
+          speedx = speedx * -1;
+          this.xflip = true;
+        }
+        if(speedy > 0){
+          speedy -= 0.2;
+        }
+        if(speedx > 0){
+          speedx -= 0.2;
+        }
 
-    if(speedX < 0 && xChanged == false){
-      speedX = speedX * -1;
-      xChanged = true;
+        if(this.xflip === true){
+          this.playerSpeedX += speedx;
+        }else{
+          this.playerSpeedX -= speedx;
+        }
+
+        if(this.yflip === true){
+          this.playerSpeedY += speedy;
+        }else{
+          this.playerSpeedY -= speedy;
+        }
+
+        if(speedy === 0){
+          this.yflip = false;
+        }
+
+        if(speedx === 0){
+          this.xflip = false;
+        }
     }
-
-    if(speedY < 0 && xChanged == false){
-      speedY = speedY * -1;
-      yChanged = true;
-    }
-
-    if(speedX > 0 && xChanged == false){
-      this.player.playerSpeedX -= 0.05;
-      speedY -= 0.05;
-    }
-
-    if(speedY > 0 && yChanged == false){
-      this.player.playerSpeedY -= 0.05;
-      speedY -= 0.05;
-    }
-
-    if(speedX > 0 && xChanged == true){
-      this.player.playerSpeedX += 0.05;
-      speedX -= 0.05;
-    }
-
-    if(speedY > 0 && yChanged == true){
-      this.player.playerSpeedY += 0.05;
-      speedY -= 0.05;
-    }
-
-    if(speedX == 0.0){
-      xChanged = false;
-      this.player.playerSpeedX = 0.0;
-    }
-
-    if(speedY == 0.0){
-      yChanged = false;
-      this.player.playerSpeedY = 0.0;
-    }
-
   },
 
   scrollBackground: function(){
@@ -158,8 +169,123 @@ var Game = {
   updatePlayer: function(){
     this.player.position.x += this.playerSpeedX;
     this.player.position.y += this.playerSpeedY;
-  }
+  },
 
+  shoot: function(){
+    if(this.shot === true){
+    this.shots.push(this.setupSprite(this.texture[3], 0.5, 0.0, this.player.position.x, this.player.position.y - 20));
+
+    this.stage.addChild(this.shots[this.shots.length -1]);
+    this.shot = false;
+    }
+  },
+
+  keyDownHandler: function(event){
+    	var keyPressed = String.fromCharCode(event.keyCode);
+
+       if (keyPressed == "W")
+         {
+           Game.keys[0] = true;
+           isMoving = true;
+         }
+      else if (keyPressed == "D")
+           {
+             Game.keys[1] = true;
+             isMoving = true;
+           }
+      else if (keyPressed == "S")
+        {
+          Game.keys[2] = true;
+          isMoving = true;
+        }
+      else if (keyPressed == "A")
+        {
+          Game.keys[3] = true;
+          isMoving = true;
+        }
+      else if(keyPressed == " ")
+        {
+          Game.keys[4] = true;
+          this.shot = true;
+        }
+  },
+
+  keyUpHandler: function(event){
+    var keyPressed = String.fromCharCode(event.keyCode);
+
+     if (keyPressed == "W")
+       {
+         Game.keys[0] = false;
+         isMoving = false;
+       }
+    else if (keyPressed == "D")
+         {
+           Game.keys[1] = false;
+           isMoving = false;
+         }
+    else if (keyPressed == "S")
+      {
+        Game.keys[2] = false;
+        isMoving = false;
+      }
+    else if (keyPressed == "A")
+      {
+        Game.keys[3] = false;
+        isMoving = false;
+      }
+    else if(keyPressed == " ")
+      {
+        Game.keys[4] = false;
+        Game.shot = false;
+      }
+  },
+
+  keysHandler: function(){
+    if(this.keys[0] === true){
+      this.accelerate();
+    }else{
+      this.slowDown();
+    }
+
+    if(this.keys[1] === true){
+      this.moveRight();
+    }else{
+      this.slowDown();
+    }
+
+    if(this.keys[2] === true){
+      this.useBreaks();
+    }else{
+      this.slowDown();
+    }
+
+    if(this.keys[3] === true){
+      this.moveLeft();
+    }else{
+      this.slowDown();
+    }
+
+    if(this.keys[4] === true){
+      this.shoot();
+    }else{
+      this.slowDown();
+    }
+
+  },
+
+  updateShots: function(){
+    for(var i = 0; i < this.shots.length; i++){
+      if(this.shots[i].position.y > 0){
+        this.shots[i].position.y -= 5.0;
+      }
+
+      if(this.shots[this.shots.length - 1].position.y < 0){
+        this.shots[this.shots.length -1].position.y = -100;
+        this.stage.removeChild(this.shots[i]);
+        this.shots.pop();
+      }
+    }
+  }
 };
 
 
@@ -167,59 +293,16 @@ function Loop(){
   Game.scrollBackground();
   Game.updatePlayer();
 
-  Game.boundsCheck(Game.player);
+  Game.keysHandler();
 
+  if(Game.isMoving === true){
+    Game.slowDown();
+  }
+
+  Game.boundsCheck(Game.player);
+    if((Game.shots.length -1) >= 0){
+      Game.updateShots();
+    }
   requestAnimFrame(Loop); //update the screen
   Game.render.render(Game.stage); //draw the backbuffer to the screen
-}
-
-function initKeys(){
-  document.body.addEventListener('keydown', function (evt) {
-    if (evt.keyCode === 38 || evt.keyCode == 87) {
-      Game.accelerate();
-    }
-  });
-
-  document.body.addEventListener('keyup', function (evt) {
-    if (evt.keyCode === 38 || evt.keyCode == 87) {
-      Game.slowDown();
-    }
-  });
-
-
-  document.body.addEventListener('keydown', function (evt) {
-    if (evt.keyCode === 40 || evt.keyCode == 83) {
-      Game.useBreaks();
-    }
-  });
-
-  document.body.addEventListener('keyup', function (evt) {
-    if (evt.keyCode === 40 || evt.keyCode == 83) {
-      Game.slowDown();
-    }
-  });
-
-  document.body.addEventListener('keydown', function (evt) {
-    if (evt.keyCode === 37 || evt.keyCode == 65) {
-      Game.moveLeft();
-    }
-  });
-
-  document.body.addEventListener('keyup', function (evt) {
-    if (evt.keyCode === 37 || evt.keyCode == 65) {
-      Game.slowDown();
-    }
-  });
-
-  document.body.addEventListener('keydown', function (evt) {
-    if (evt.keyCode === 39 || evt.keyCode == 68) {
-      Game.moveRight();
-    }
-  });
-
-  document.body.addEventListener('keyup', function (evt) {
-    if (evt.keyCode === 39 || evt.keyCode == 68) {
-      Game.slowDown();
-    }
-  });
 }
