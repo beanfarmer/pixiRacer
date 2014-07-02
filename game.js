@@ -1,233 +1,302 @@
+//globle consts
 var MAXSPEED = 5.0;
 var MINSPEED = -5.0;
 
-var rendWidth = 320;
-var rendHeight = 480;
+var PLAYERSTARTX = 70;
+var PLAYERSTARTY = 240;
 
-var stage = new PIXI.Stage(0xffffff);
-var render = PIXI.autoDetectRenderer(rendWidth, rendHeight);
+var SCREENWIDTH = 320;
+var SCREENHEIGHT = 480;
 
-function init(){
-  document.body.appendChild(render.view);
-}
+//Game Class
+var Game = {
+  Loop: null,
+  stage: null,
+  render: null,
+  player: null,
+  playerSpeedX: null,
+  playerSpeedY: null,
+  xflip: null,
+  yflip: null,
+  background: null,
+  score: null,
+  isMoving: null,
+  shot: null,
+  texture: [],
+  enemies: [],
+  trucks: [],
+  keys: [],
+  shots: [],
 
-var bgTexture = PIXI.Texture.fromImage('img/road.png');
-var carTexture = PIXI.Texture.fromImage('img/car.png'); // player sprite is loaded in as a texture
-var enCarTexture = PIXI.Texture.fromImage('img/car2.png'); // enCar == enemy
-var shot00Texture = PIXI.Texture.fromImage('img/shot00.png'); //basic shot
-var truckDTurboTexture = PIXI.Texture.fromImage('img/truckDturbo.png');
+  init: function(){
+    this.initKeys();
+    this.stage = new PIXI.Stage();
+    this.render = PIXI.autoDetectRenderer(SCREENWIDTH, SCREENHEIGHT);
+    document.body.appendChild(this.render.view);
+    this.score = 0;
+    this.isMoving = false;
+    this.xflip = false;
+    this.yflip = false;
+    this.loadTextures();
 
-var bg = new PIXI.Sprite(bgTexture);
-var car = new PIXI.Sprite(carTexture); // player sprite texture is then loaded to a sprite
-var enCar = new PIXI.Sprite(enCarTexture);
-var truckDTurbo = new PIXI.Sprite(truckDTurboTexture);
-var shot00 = new PIXI.Sprite(shot00Texture);
+    this.background = this.setupSprite(this.texture[0], 0.0, 0.0, 0, -260); //setup the background;
+    this.stage.addChild(this.background);
 
-var speedY = 0.0;
-var speedX = 0.0;
+    this.player = this.setupSprite(this.texture[1], 0.5, 0.5, PLAYERSTARTX, PLAYERSTARTY); //setup the player
+    this.playerSpeedX = 0.0;
+    this.playerSpeedY = 0.0;
+    this.stage.addChild(this.player);
 
-var debug = true;
-var userinput = false;
+    requestAnimFrame(Loop);
+  },
 
-var weapon = 0;
+  initKeys: function(){
+    for(var i = 0; i < 6; i++){
+      this.keys[i] = false;
+      console.log("key: " + this.keys[i]);
+    }
+    this.shot = false;
+    document.body.addEventListener('keydown',Game.keyDownHandler, false);
+    document.body.addEventListener('keyup',  Game.keyUpHandler, false);
+  },
 
-var fireing = false;
-var childLoaded = false; //fixes a bug
+  loadTextures: function(){
+    this.texture[0] = PIXI.Texture.fromImage('img/road.png');
+    this.texture[1] = PIXI.Texture.fromImage('img/car.png');
+    this.texture[2] = PIXI.Texture.fromImage('img/enCar.png');
+    this.texture[3] = PIXI.Texture.fromImage('img/shot00.png');
+    this.texture[4] = PIXI.Texture.fromImage('img/truckDturbo.png');
+    this.texture[5] = PIXI.Texture.fromImage('img/Dturbo.png');
+  },
 
-bg.anchor.x = 0.0;
-bg.anchor.y = 0.0;
+  setupSprite: function(texture, anchorX, anchorY, startX, startY){
+    var sprite = new PIXI.Sprite(texture);
 
-enCar.anchor.x = 0.5;
-enCar.anchor.y = 0.5;
+    sprite.anchor.x = anchorX;
+    sprite.anchor.y = anchorY;
 
-car.anchor.x = 0.5; // this sets the center of the image to be its 0,0
-car.anchor.y = 0.5;
+    sprite.position.x = startX;
+    sprite.position.y = startY;
 
-truckDTurbo.anchor.x = 0.5;
-truckDTurbo.anchor.y = 0.5;
+    return sprite;
+  },
 
+  boundsCheck: function(object){
+    if(object.position.x < 0){
+      object.position.x = SCREENWIDTH;
+    }else if(object.position.x > SCREENWIDTH){
+      object.position.x = 0;
+    }
+    if(object.position.y < 0){
+      object.position.y = SCREENHEIGHT;
+    }else if(object.position.y > SCREENHEIGHT){
+      object.position.y = 0;
+    }
+  },
 
-bg.position.x = 0;
-bg.position.y = -260;
+  accelerate: function(){
+    if(this.playerSpeedY > MINSPEED){
+      this.playerSpeedY -= 0.2;
+    }
+  },
 
-enCar.position.x = 135;
-enCar.position.y = 200;
+  useBreaks: function(){
+    if(this.playerSpeedY < MAXSPEED){
+      this.playerSpeedY += 0.2;
+    }
+  },
 
-car.position.x = 70;
-car.position.y = 240;
+  moveLeft: function(){
+    if(this.playerSpeedX > MINSPEED){
+      this.playerSpeedX -= 0.2;
+    }
+  },
 
-truckDTurbo.position.x = 70;
-truckDTurbo.position.y = 460;
+  moveRight: function(){
+    if(this.playerSpeedX < MAXSPEED){
+      this.playerSpeedX += 0.2;
+    }
+  },
 
-stage.addChild(bg);
-stage.addChild(car); // need to add our sprites to the stage
-stage.addChild(enCar); //fun fact you can also stage.removeChild(object)
-stage.addChild(truckDTurbo);
+  slowDown: function(){
+    console.log("inside slowDown");
+    var speedx = this.playerSpeedX;
+    var speedy = this.playerSpeedY;
 
-requestAnimFrame(Loop);
+        if(speedy < 0){
+          speedy = speedy * -1;
+          this.yflip = true;
+        }
+        if(speedx < 0){
+          speedx = speedx * -1;
+          this.xflip = true;
+        }
+        if(speedy > 0){
+          speedy -= 0.1;
+        }
+        if(speedx > 0){
+          speedx -= 0.1;
+        }
 
-function drawDebug(){ //console output if debug
-  console.clear();
-  console.log("speedX = " + speedX);
-  console.log("speedY = " + speedY);
-}
+        if(this.xflip === true){
+          this.playerSpeedX += speedx;
+        }else{
+          this.playerSpeedX -= speedx;
+        }
 
-function accelerate(){ // controls now work
-  if(speedY > MINSPEED){
-    speedY -= 0.2;
+        if(this.yflip === true){
+          this.playerSpeedY += speedy;
+        }else{
+          this.playerSpeedY += speedy;
+        }
+
+        if(speedy < 0.2){
+          this.playerSpeedY = 0;
+        }
+
+        if(speedx < 0.2){
+          this.playerSpeedX = 0;
+        }
+
+        if(speedy === 0){
+          this.yflip = false;
+        }
+
+        if(speedx === 0){
+          this.xflip = false;
+        }
+  },
+
+  scrollBackground: function(){
+    if(this.background.position.y < 0){
+        this.background.position.y += 4;
+    }else{
+      this.background.position.y = -260;
+    }
+  },
+
+  updatePlayer: function(){
+    this.player.position.x += this.playerSpeedX;
+    this.player.position.y += this.playerSpeedY;
+  },
+
+  shoot: function(){
+    if(this.shot === true){
+    this.shots.push(this.setupSprite(this.texture[3], 0.5, 0.0, this.player.position.x, this.player.position.y - 20));
+
+    this.stage.addChild(this.shots[this.shots.length -1]);
+    this.shot = false;
+    }
+  },
+
+  keyDownHandler: function(event){
+    	var keyPressed = String.fromCharCode(event.keyCode);
+
+       if (keyPressed == "W")
+         {
+           Game.keys[0] = true;
+           isMoving = true;
+         }
+      else if (keyPressed == "D")
+           {
+             Game.keys[1] = true;
+             isMoving = true;
+           }
+      else if (keyPressed == "S")
+        {
+          Game.keys[2] = true;
+          isMoving = true;
+        }
+      else if (keyPressed == "A")
+        {
+          Game.keys[3] = true;
+          isMoving = true;
+        }
+      else if(keyPressed == " ")
+        {
+          Game.keys[4] = true;
+          this.shot = true;
+        }
+  },
+
+  keyUpHandler: function(event){
+    var keyPressed = String.fromCharCode(event.keyCode);
+
+     if (keyPressed == "W")
+       {
+         Game.keys[0] = false;
+         isMoving = false;
+       }
+    else if (keyPressed == "D")
+         {
+           Game.keys[1] = false;
+           isMoving = false;
+         }
+    else if (keyPressed == "S")
+      {
+        Game.keys[2] = false;
+        isMoving = false;
+      }
+    else if (keyPressed == "A")
+      {
+        Game.keys[3] = false;
+        isMoving = false;
+      }
+    else if(keyPressed == " ")
+      {
+        Game.keys[4] = false;
+        Game.shot = false;
+      }
+  },
+
+  keysHandler: function(){
+    if(this.keys[0] === true){
+      this.accelerate();
+    }
+
+    if(this.keys[1] === true){
+      this.moveRight();
+    }
+
+    if(this.keys[2] === true){
+      this.useBreaks();
+    }
+
+    if(this.keys[3] === true){
+      this.moveLeft();
+    }
+
+    if(this.keys[4] === true){
+      this.shoot();
+    }
+  },
+
+  updateShots: function(){
+    for(var i = 0; i < this.shots.length; i++){
+      if(this.shots[i].position.y > 0){
+        this.shots[i].position.y -= 5.0;
+      }
+
+      if(this.shots[this.shots.length - 1].position.y < 0){
+        this.shots[this.shots.length -1].position.y = -100;
+        this.stage.removeChild(this.shots[i]);
+        this.shots.pop();
+      }
+    }
   }
-}
+};
 
-function useBreaks(){
-  if(speedY < MAXSPEED){
-    speedY += 0.2;
-  }
-}
-
-function moveLeft(){
-  if(speedX > MINSPEED){
-    speedX -= 0.2;
-  }
-}
-
-function moveRight(){
-  if(speedX < MAXSPEED){
-    speedX+= 0.2;
-  }
-}
-
-function shoot(){ //started work here anyone want to jump in.
-      fireing = true;
-}
-
-function Fire(object){
-  if(childLoaded == false){
-    object.anchor.x = 0.5;
-    object.anchor.y = 1.0;
-
-    object.position.x = car.position.x;
-    object.position.y = car.position.y - 10;
-
-    stage.addChild(object);
-    childLoaded = true;
-  }
-
-  if(object.position.y > 0){
-    scrollY(object, -4);
-  }else{
-    stage.removeChild(object);
-    childLoaded = false;
-    fireing = false;
-  }
-}
-
-function Controls(){
-  kd.UP.down(accelerate);
-  kd.DOWN.down(useBreaks);
-  kd.LEFT.down(moveLeft);
-  kd.RIGHT.down(moveRight);
-  kd.SPACE.down(shoot);
-
-  if(kd.UP.isDown() == false){ //yay
-    slowDown();
-  }
-
-  if(kd.DOWN.isDown() == false){ //yay
-    slowDown();
-  }
-
-  if(kd.LEFT.isDown() == false){ //yay
-    slowDown();
-  }
-
-  if(kd.RIGHT.isDown() == false){ //yay
-    slowDown();
-  }
-}
-
-function slowDown(){
-  if(speedY > 0.0){
-    speedY -= 0.05;
-  }
-  if(speedY < 0.0){
-    speedY += 0.05;
-  }
-  if(speedX > 0.0){
-    speedX -= 0.05;
-  }
-  if(speedX < 0.0){
-    speedX += 0.05;
-  }
-  stopDead();
-}
-
-function stopDead(){//make sure its stopped dead.
-  if(speedX < 0.01 && speedX > 0.01){
-    speedX = 0.0;
-  }
-  if(speedY < 0.01 && speedY > 0.01){
-    speedY = 0.0;
-  }
-}
-
-function scrollBg(){
-  if(bg.position.y < 0){
-      bg.position.y += 4;
-  }else{
-    bg.position.y = -260;
-  }
-  //console.log('bgY:' + bg.position.y);
-}
-
-
-function scrollY(object, ySpeed){
-  object.position.y += ySpeed;
-}
-
-function boundsCheck(object){ // someone add me please
-  if(object.position.x < 0){
-    object.position.x = rendWidth;
-  }else if(object.position.x > rendWidth){
-    object.position.x = 0;
-  }
-  if(object.position.y < 0){
-    object.position.y = rendHeight;
-  }else if(object.position.y > rendHeight){
-    object.position.y = 0;
-  }
-}
-
-function collision(object1, object2){ // someone add me please
-//	if(object1.position.x == object2.position.x){
-//	}
-}
 
 function Loop(){
-  kd.tick(); // keyboard listener's update if you like
-  scrollBg();
+  Game.scrollBackground();
+  Game.keysHandler();
 
-  scrollY(enCar, 3);
-  boundsCheck(enCar);
+  Game.boundsCheck(Game.player);
+    if((Game.shots.length -1) >= 0){
+      Game.updateShots();
+    }
 
-  scrollY(truckDTurbo, -3);
-  boundsCheck(truckDTurbo);
-
-  if(fireing == true){
-    Fire(shot00);
-  }
-
-
-  Controls();
-  car.position.y += speedY; //update the car's y position
-  car.position.x += speedX;//update the car's x position
-  boundsCheck(car); //car bounds check
-  collision(car, enCar);
-  debug=false;
-
-  if(debug==true){
-    drawDebug();
-  }
-
+  Game.updatePlayer();
   requestAnimFrame(Loop); //update the screen
-  render.render(stage); //draw the backbuffer to the screen
+  Game.render.render(Game.stage); //draw the backbuffer to the screen
 }
