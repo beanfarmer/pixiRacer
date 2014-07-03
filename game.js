@@ -33,11 +33,14 @@ var Game = {
     this.stage = new PIXI.Stage();
     this.render = PIXI.autoDetectRenderer(SCREENWIDTH, SCREENHEIGHT);
     document.body.appendChild(this.render.view);
+
+    //setup vars
     this.score = 0;
     this.isMoving = false;
     this.xflip = false;
     this.yflip = false;
     this.loadTextures();
+    this.shot = false;
 
     this.background = this.setupSprite(this.texture[0], 0.0, 0.0, 0, -260); //setup the background;
     this.stage.addChild(this.background);
@@ -118,54 +121,6 @@ var Game = {
     }
   },
 
-  slowDown: function(){
-    console.log("inside slowDown");
-    var speedx = this.playerSpeedX;
-    var speedy = this.playerSpeedY;
-
-        if(speedy < 0){
-          speedy = speedy * -1;
-          this.yflip = true;
-        }
-        if(speedx < 0){
-          speedx = speedx * -1;
-          this.xflip = true;
-        }
-        if(speedy > 0){
-          speedy -= 0.1;
-        }
-        if(speedx > 0){
-          speedx -= 0.1;
-        }
-
-        if(this.xflip === true){
-          this.playerSpeedX += speedx;
-        }else{
-          this.playerSpeedX -= speedx;
-        }
-
-        if(this.yflip === true){
-          this.playerSpeedY += speedy;
-        }else{
-          this.playerSpeedY += speedy;
-        }
-
-        if(speedy < 0.2){
-          this.playerSpeedY = 0;
-        }
-
-        if(speedx < 0.2){
-          this.playerSpeedX = 0;
-        }
-
-        if(speedy === 0){
-          this.yflip = false;
-        }
-
-        if(speedx === 0){
-          this.xflip = false;
-        }
-  },
 
   scrollBackground: function(){
     if(this.background.position.y < 0){
@@ -181,12 +136,10 @@ var Game = {
   },
 
   shoot: function(){
-    if(this.shot === true){
     this.shots.push(this.setupSprite(this.texture[3], 0.5, 0.0, this.player.position.x, this.player.position.y - 20));
 
     this.stage.addChild(this.shots[this.shots.length -1]);
     this.shot = false;
-    }
   },
 
   keyDownHandler: function(event){
@@ -212,7 +165,7 @@ var Game = {
           Game.keys[3] = true;
           isMoving = true;
         }
-      else if(keyPressed == " ")
+      else if(keyPressed == "m")
         {
           Game.keys[4] = true;
           this.shot = true;
@@ -242,7 +195,7 @@ var Game = {
         Game.keys[3] = false;
         isMoving = false;
       }
-    else if(keyPressed == " ")
+    else if(keyPressed == "m")
       {
         Game.keys[4] = false;
         Game.shot = false;
@@ -292,9 +245,14 @@ function Loop(){
   Game.keysHandler();
 
   Game.boundsCheck(Game.player);
-    if((Game.shots.length -1) >= 0){
-      Game.updateShots();
+  Game.shoot();
+    if(Game.shot === true){
+      Game.shoot();
     }
+
+  if(Game.shots.length -1 >= 0){
+    Game.updateShots();
+  }
 
   Game.updatePlayer();
   requestAnimFrame(Loop); //update the screen
