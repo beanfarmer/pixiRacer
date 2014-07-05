@@ -277,7 +277,6 @@ function Loop(){
   Game.keysHandler();
 
   Game.boundsCheck(Game.player);
-  Game.shoot();
     if(Game.shot === true){
       Game.shoot();
     }
