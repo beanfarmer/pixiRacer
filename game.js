@@ -22,6 +22,7 @@ var Game = {
   score: null,
   isMoving: null,
   shot: null,
+  shotGap: null,
   texture: [],
   enemies: [],
   trucks: [],
@@ -262,9 +263,17 @@ var Game = {
         this.shots[i].position.y -= 5.0;
       }
 
-      if(this.shots[this.shots.length - 1].position.y < 0){
-        this.shots[this.shots.length -1].position.y = -100;
-        this.stage.removeChild(this.shots[i]);
+      if(this.shots[i].position.y <= 0){
+        this.shots[i].position.y = -100;
+      }
+    }
+  },
+
+  flushShots: function(){
+    shotsLen = this.shots.length - 1;
+    if(shotsLen > 200){
+      for(;shotsLen > 0; shotsLen--){
+        this.stage.removeChild(this.shots[shotsLen]);
         this.shots.pop();
       }
     }
@@ -279,8 +288,8 @@ function Loop(){
   Game.boundsCheck(Game.player);
     if(Game.shot === true){
       Game.shoot();
+      Game.flushShots();
     }
-
   if(Game.shots.length -1 >= 0){
     Game.updateShots();
   }
