@@ -23,6 +23,7 @@ var Game = {
   isMoving: null,
   shot: null,
   shotGap: null,
+  shotLimit: null,
   texture: [],
   enemies: [],
   trucks: [],
@@ -40,6 +41,7 @@ var Game = {
 
     //setup vars
     this.score = 0;
+    this.shotLimit = 5;
     this.isMoving = false;
     this.xflip = false;
     this.yflip = false;
@@ -271,7 +273,7 @@ var Game = {
 
   flushShots: function(){
     shotsLen = this.shots.length - 1;
-    if(shotsLen > 200){
+    if(shotsLen > this.shotsLimit){
       for(;shotsLen > 0; shotsLen--){
         this.stage.removeChild(this.shots[shotsLen]);
         this.shots.pop();
@@ -282,19 +284,21 @@ var Game = {
 
 
 function Loop(){
-  Game.scrollBackground();
-  Game.keysHandler();
+  Game.scrollBackground(); //move the background
+  Game.keysHandler(); // check the keys
 
-  Game.boundsCheck(Game.player);
-    if(Game.shot === true){
-      Game.shoot();
-      Game.flushShots();
+  Game.boundsCheck(Game.player); // check the position of the player and move the players xy if off screen (looping)
+    if(Game.shot === true){ // if we have shot
+      if(Game.shots.length -1 < Game.shotLimit){
+          Game.shoot(); // spawn shots
+      }
+      Game.flushShots(); // check for dead shots
     }
-  if(Game.shots.length -1 >= 0){
-    Game.updateShots();
+  if(Game.shots.length -1 >= 0){ // if there are shots in the shoots array
+    Game.updateShots(); // update the shot position (iter through them)
   }
 
-  Game.updatePlayer();
+  Game.updatePlayer(); //move the player
   requestAnimFrame(Loop); //update the screen
   Game.render.render(Game.stage); //draw the backbuffer to the screen
 }
