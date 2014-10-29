@@ -29,3 +29,5 @@ Announcements:
 >- added a sprite spawn function. (beanfarmer)
 >- Massive codebase rework, swapped out keydrown.js for standard JS Eventhandlers(beanfarmer).
 >- shooting now implemented although needs refinement(beanfarmer)
+
+Live Version Avalible at http://beanfarmer.co.uk
