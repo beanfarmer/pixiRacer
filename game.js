@@ -151,25 +151,25 @@ var Game = {
 
   slowDownYup: function(){
     if(this.playerSpeedY < 0){
-      this.playerSpeedY += 0.01;
+      this.playerSpeedY += 0.1;
     }
   },
 
   slowDownYdown: function(){
     if(this.playerSpeedY > 0){
-      this.playerSpeedY -= 0.01;
+      this.playerSpeedY -= 0.1;
     }
   },
 
   slowDownXright: function(){
     if(this.playerSpeedX < 0){
-      this.playerSpeedX += 0.01;
+      this.playerSpeedX += 0.1;
     }
   },
 
   slowDownXleft: function(){
     if(this.playerSpeedX > 0){
-      this.playerSpeedX -= 0.01;
+      this.playerSpeedX -= 0.1;
     }
   },
 
@@ -247,7 +247,6 @@ var Game = {
        {
          Game.keys[0] = false;
          isMoving = false;
-         console.log('w released');
        }
        //D and Right arrow
     else if (keyPressed == 68 || keyPressed == 39)
