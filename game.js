@@ -301,6 +301,14 @@ var Game = {
       this.slowDownXleft();
     }
 
+    if (this.keys[4] === false){
+      this.stopShooting();
+    }
+  },
+
+  stopShooting: function(){
+    this.keys[4] = false;
+    this.shot = false;
   },
 
   updateShots: function() {
@@ -318,7 +326,7 @@ var Game = {
   flushShots: function() {
     shotsLen = this.shots.length - 1;
     if (shotsLen > this.shotsLimit) {
-      for (; shotsLen > 0; shotsLen--) {
+      for (shotslen; shotsLen > 0; shotsLen--) {
         this.stage.removeChild(this.shots[shotsLen]);
         this.shots.pop();
       }
