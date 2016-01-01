@@ -1,7 +1,12 @@
 body{
   margin: 0;
   padding: 0;
-  background-color: #000000;
+  background-color: rgba(0,0,0,0.95);
+  background-image: url("img/road.png");
+  background-blend-mode: overlay;
+  background-size: cover;
+
+
 }
 
 canvas{
@@ -12,4 +17,6 @@ canvas{
   margin-right: auto;
   display: block;
   width: 320px;
+
+
 }
