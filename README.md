@@ -18,7 +18,7 @@ To-Do Code:
 >- add enemy paths.
 >- add collision detection.
 >- spawn some enemies.
->- add shooting/pickup and scoring.
+>- add pickup and scoring.
 >- new levels and a level handling system.
 
 Announcements:
@@ -29,5 +29,7 @@ Announcements:
 >- added a sprite spawn function. (beanfarmer)
 >- Massive codebase rework, swapped out keydrown.js for standard JS Eventhandlers(beanfarmer).
 >- shooting now implemented although needs refinement(beanfarmer)
+>- help from MrKevlarr on the rework of look of page and controls (adding arrow keys)
+>- shotting works but there are no limits and only one weapon.
 
 Live Version Avalible at http://beanfarmer.co.uk
