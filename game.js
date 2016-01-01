@@ -149,6 +149,29 @@ var Game = {
     }
   },
 
+  slowDownYup: function(){
+    if(this.playerSpeedY < 0){
+      this.playerSpeedY += 0.01;
+    }
+  },
+
+  slowDownYdown: function(){
+    if(this.playerSpeedY > 0){
+      this.playerSpeedY -= 0.01;
+    }
+  },
+
+  slowDownXright: function(){
+    if(this.playerSpeedX < 0){
+      this.playerSpeedX += 0.01;
+    }
+  },
+
+  slowDownXleft: function(){
+    if(this.playerSpeedX > 0){
+      this.playerSpeedX -= 0.01;
+    }
+  },
 
   scrollBackground: function(){
     //loop the background
@@ -214,6 +237,7 @@ var Game = {
        {
          Game.keys[0] = false;
          isMoving = false;
+         console.log('w released');
        }
     else if (keyPressed == "D")
          {
@@ -238,6 +262,7 @@ var Game = {
   },
 
   keysHandler: function(){
+    //key down events
     if(this.keys[0] === true){
       this.accelerate();
     }
@@ -257,6 +282,24 @@ var Game = {
     if(this.keys[4] === true){
       this.shoot();
     }
+
+    //key up events
+    if(this.keys[0] === false){
+      this.slowDownYup();
+    }
+
+    if(this.keys[1] === false){
+      this.slowDownXright();
+    }
+
+    if(this.keys[2] === false){
+      this.slowDownYdown();
+    }
+
+    if(this.keys[3] === false){
+      this.slowDownXleft();
+    }
+
   },
 
   updateShots: function(){
