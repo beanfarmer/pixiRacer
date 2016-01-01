@@ -201,29 +201,38 @@ var Game = {
 
   keyDownHandler: function(event){
     //get the key that triggered the event
-    	var keyPressed = String.fromCharCode(event.keyCode);
+    	var keyPressed = event.keyCode;
 
-       if (keyPressed == "W")
+        //W and Up arrow
+       if (keyPressed == 87 || keyPressed == 38)
          {
            Game.keys[0] = true; //tell our array we have pressed a key
            isMoving = true; //tell the engine we want to be moving
          }
-      else if (keyPressed == "D")
+
+         //D and Right arrow
+      else if (keyPressed == 68 || keyPressed == 39)
            {
              Game.keys[1] = true;
              isMoving = true;
            }
-      else if (keyPressed == "S")
+
+           //S and down arrow
+      else if (keyPressed == 83 || keyPressed == 40)
         {
           Game.keys[2] = true;
           isMoving = true;
         }
-      else if (keyPressed == "A")
+
+        //A and left arrow
+      else if (keyPressed == 65 || keyPressed == 37)
         {
           Game.keys[3] = true;
           isMoving = true;
         }
-      else if(keyPressed == " ")
+
+        //Space
+      else if(keyPressed == 32)
         {
           Game.keys[4] = true; //keys[4] is shooting
           this.shot = true; // tell the game to update the shots
@@ -231,30 +240,35 @@ var Game = {
   },
 
   keyUpHandler: function(event){
-    var keyPressed = String.fromCharCode(event.keyCode);
+    var keyPressed = event.keyCode;
 
-     if (keyPressed == "W")
+    //W and Up arrow
+   if (keyPressed == 87 || keyPressed == 38)
        {
          Game.keys[0] = false;
          isMoving = false;
          console.log('w released');
        }
-    else if (keyPressed == "D")
+       //D and Right arrow
+    else if (keyPressed == 68 || keyPressed == 39)
          {
            Game.keys[1] = false;
            isMoving = false;
          }
-    else if (keyPressed == "S")
+         //S and down arrow
+     else if (keyPressed == 83 || keyPressed == 40)
       {
         Game.keys[2] = false;
         isMoving = false;
       }
-    else if (keyPressed == "A")
+      //A and left arrow
+    else if (keyPressed == 65 || keyPressed == 37)
       {
         Game.keys[3] = false;
         isMoving = false;
       }
-    else if(keyPressed == " ")
+      //Space
+    else if(keyPressed == 32)
       {
         Game.keys[4] = false;
         Game.shot = false;
