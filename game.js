@@ -33,11 +33,10 @@ var Game = {
   init: function() {
     //setup keylisteners
     this.initKeys();
-
+    var canvas = document.getElementById('canvas');
     //setup the stage
     this.stage = new PIXI.Stage();
-    this.render = PIXI.autoDetectRenderer(SCREENWIDTH, SCREENHEIGHT);
-    document.body.appendChild(this.render.view);
+    this.render = new PIXI.autoDetectRenderer(SCREENWIDTH, SCREENHEIGHT, canvas);
 
     //setup vars
     this.score = 0;
