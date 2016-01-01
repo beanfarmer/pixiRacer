@@ -58,6 +58,7 @@ var Game = {
     this.playerSpeedX = 0.0;
     this.playerSpeedY = 0.0;
     this.stage.addChild(this.player);
+    this.spawnEnemy(); //for debugging and development use only see line 197
 
     requestAnimFrame(Loop);
   },
@@ -78,7 +79,7 @@ var Game = {
     //add our images to an array of textures
     this.texture[0] = PIXI.Texture.fromImage('img/road.png');
     this.texture[1] = PIXI.Texture.fromImage('img/car.png');
-    this.texture[2] = PIXI.Texture.fromImage('img/enCar.png');
+    this.texture[2] = PIXI.Texture.fromImage('img/Car2.png');
     this.texture[3] = PIXI.Texture.fromImage('img/shot00.png');
     this.texture[4] = PIXI.Texture.fromImage('img/truckDturbo.png');
     this.texture[5] = PIXI.Texture.fromImage('img/Dturbo.png');
@@ -183,6 +184,29 @@ var Game = {
     //move the player
     this.player.position.x += this.playerSpeedX;
     this.player.position.y += this.playerSpeedY;
+  },
+
+  spawnEnemy: function() {
+    this.enemies.push(this.setupSprite(this.texture[2], 0.5, 0.5, (SCREENWIDTH / 2), 20));
+    this.stage.addChild(this.enemies[this.enemies.length - 1]);
+  },
+
+  updateEnemies: function() {
+    var i;
+    for (i = this.enemies.length - 1; i >= 0; i--) {
+      this.enemies[i].position.y += 2; // just moves down the screen at the moment want branching logic here
+    }
+    this.checkEnemyDespawn();
+  },
+
+  checkEnemyDespawn: function() {
+    var i;
+    for (i = this.enemies.length - 1; i >= 0; i--) {
+      if (this.enemies[i].position.y <= 0 || this.enemies[i].position.y >= SCREENHEIGHT) {
+        this.stage.removeChild(this.enemies[i]);
+        this.enemies.pop();
+      }
+    }
   },
 
   shoot: function() {
@@ -300,12 +324,12 @@ var Game = {
       this.slowDownXleft();
     }
 
-    if (this.keys[4] === false){
+    if (this.keys[4] === false) {
       this.stopShooting();
     }
   },
 
-  stopShooting: function(){
+  stopShooting: function() {
     this.keys[4] = false;
     this.shot = false;
   },
@@ -347,6 +371,10 @@ function Loop() {
   }
   if (Game.shots.length - 1 >= 0) { // if there are shots in the shoots array
     Game.updateShots(); // update the shot position (iter through them)
+  }
+
+  if (Game.enemies.length >= 0) {
+    Game.updateEnemies();
   }
 
   Game.updatePlayer(); //move the player
