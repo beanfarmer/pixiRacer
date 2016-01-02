@@ -2,8 +2,12 @@
 var MAXSPEED = 5.0;
 var MINSPEED = -5.0;
 
-var PLAYERSTARTX = 70;
-var PLAYERSTARTY = 240;
+var PLAYERSTARTX = 140;
+var PLAYERSTARTY = 460;
+
+var ENEMYSPAWNX = 0;
+var ENEMYSPAWNMIN = 65;
+var ENEMYSPAWNMAX = 255;
 
 var SCREENWIDTH = 320;
 var SCREENHEIGHT = 480;
@@ -24,6 +28,7 @@ var Game = {
   shot: null,
   shotGap: null,
   shotLimit: null,
+  enemyLimit: 5,
   texture: [],
   enemies: [],
   trucks: [],
@@ -58,7 +63,6 @@ var Game = {
     this.playerSpeedX = 0.0;
     this.playerSpeedY = 0.0;
     this.stage.addChild(this.player);
-    this.spawnEnemy(); //for debugging and development use only see line 197
 
     requestAnimFrame(Loop);
   },
@@ -79,7 +83,7 @@ var Game = {
     //add our images to an array of textures
     this.texture[0] = PIXI.Texture.fromImage('img/road.png');
     this.texture[1] = PIXI.Texture.fromImage('img/car.png');
-    this.texture[2] = PIXI.Texture.fromImage('img/Car2.png');
+    this.texture[2] = PIXI.Texture.fromImage('img/car2.png');
     this.texture[3] = PIXI.Texture.fromImage('img/shot00.png');
     this.texture[4] = PIXI.Texture.fromImage('img/truckDturbo.png');
     this.texture[5] = PIXI.Texture.fromImage('img/Dturbo.png');
@@ -187,14 +191,26 @@ var Game = {
   },
 
   spawnEnemy: function() {
-    this.enemies.push(this.setupSprite(this.texture[2], 0.5, 0.5, (SCREENWIDTH / 2), 20));
-    this.stage.addChild(this.enemies[this.enemies.length - 1]);
+    var xpos = Math.floor((Math.random() * (ENEMYSPAWNMAX - ENEMYSPAWNMIN + 1)) + ENEMYSPAWNMIN);
+    Game.enemies.push(Game.setupSprite(Game.texture[2], 0.5, 0.5, xpos, ENEMYSPAWNX));
+    Game.stage.addChild(Game.enemies[Game.enemies.length - 1]);
+  },
+
+  canSpawnEnemy: function() {
+    // May not need this: var delay = Math.floor((Math.random() * 2500) + 250);
+    if ((this.enemies.length - 1) < 1) {
+      window.setInterval(function(){
+        Game.spawnEnemy();
+      }, 1000);
+    } else {
+      this.checkEnemyDespawn();
+    }
   },
 
   updateEnemies: function() {
     var i;
     for (i = this.enemies.length - 1; i >= 0; i--) {
-      this.enemies[i].position.y += 2; // just moves down the screen at the moment want branching logic here
+      this.enemies[i].position.y += 1.5; // just moves down the screen at the moment want branching logic here
     }
     this.checkEnemyDespawn();
   },
@@ -361,6 +377,7 @@ var Game = {
 function Loop() {
   Game.scrollBackground(); //move the background
   Game.keysHandler(); // check the keys
+  Game.canSpawnEnemy(); // start spawning enemies
 
   Game.boundsCheck(Game.player); // check the position of the player and move the players xy if off screen (looping)
   if (Game.shot === true) { // if we have shot
