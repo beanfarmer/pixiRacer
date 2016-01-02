@@ -187,7 +187,8 @@ var Game = {
   },
 
   spawnEnemy: function() {
-    this.enemies.push(this.setupSprite(this.texture[2], 0.5, 0.5, (SCREENWIDTH / 2), 20));
+    var xpos = Math.floor(Math.random() * SCREENWIDTH - 1);
+    this.enemies.push(this.setupSprite(this.texture[2], 0.5, 0.5, xpos, 20));
     this.stage.addChild(this.enemies[this.enemies.length - 1]);
   },
 
